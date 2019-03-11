@@ -15,7 +15,9 @@ const zeroPaddedNumber = (num) => {
   return sprintf('%05d', num);
 };
 
+// Asynchronously reads the entire contents of a file.
 const readCounter = (callback) => {
+  // fileData is our data that is read from file
   fs.readFile(exports.counterFile, (err, fileData) => {
     if (err) {
       callback(null, 0);
@@ -25,6 +27,7 @@ const readCounter = (callback) => {
   });
 };
 
+// Asynchronously writes data to a file, replacing the file if it already exists. 
 const writeCounter = (count, callback) => {
   var counterString = zeroPaddedNumber(count);
   fs.writeFile(exports.counterFile, counterString, (err) => {
@@ -38,9 +41,35 @@ const writeCounter = (count, callback) => {
 
 // Public API - Fix this function //////////////////////////////////////////////
 
-exports.getNextUniqueId = () => {
-  counter = counter + 1;
-  return zeroPaddedNumber(counter);
+exports.getNextUniqueId = (callback) => {
+  // counter = counter + 1;
+  // return zeroPaddedNumber(counter);
+  // fs.readFile(exports.counterFile, (err, fileData) => {
+  //   
+
+  readCounter((err, id) => {
+    if (err) {
+      throw ('error writing counter');
+    } else {
+      id += 1;
+      writeCounter(id, (err, id) => {
+        if (err) {
+          callback(err);
+        } else {
+          callback(null, id)
+        }
+      });
+    }
+  })
+  // if (err) {
+  //     callback(err, null);
+  //   } else {
+  //     callback(null, Number(fileData));
+  //   }
+  // });
+  // }
+
+
 };
 
 
@@ -48,3 +77,9 @@ exports.getNextUniqueId = () => {
 // Configuration -- DO NOT MODIFY //////////////////////////////////////////////
 
 exports.counterFile = path.join(__dirname, 'counter.txt');
+
+// fs.readFile returns data to us (example 0)
+  // callback can be set data to counter variable
+// increment counter by 1 (new id to create)
+// pass counter to fs.writefile (which turns it into a 0-padded number)
+  // run callback if success
