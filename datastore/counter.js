@@ -44,8 +44,6 @@ const writeCounter = (count, callback) => {
 exports.getNextUniqueId = (callback) => {
   // counter = counter + 1;
   // return zeroPaddedNumber(counter);
-  // fs.readFile(exports.counterFile, (err, fileData) => {
-  //   
 
   readCounter((err, id) => {
     if (err) {
@@ -56,18 +54,12 @@ exports.getNextUniqueId = (callback) => {
         if (err) {
           callback(err);
         } else {
-          callback(null, id)
+          callback(null, id);
         }
       });
     }
-  })
-  // if (err) {
-  //     callback(err, null);
-  //   } else {
-  //     callback(null, Number(fileData));
-  //   }
-  // });
-  // }
+  });
+
 
 
 };
@@ -78,8 +70,3 @@ exports.getNextUniqueId = (callback) => {
 
 exports.counterFile = path.join(__dirname, 'counter.txt');
 
-// fs.readFile returns data to us (example 0)
-  // callback can be set data to counter variable
-// increment counter by 1 (new id to create)
-// pass counter to fs.writefile (which turns it into a 0-padded number)
-  // run callback if success
