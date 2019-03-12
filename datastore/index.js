@@ -27,7 +27,6 @@ exports.readAll = (callback) => {
       callback(err);
     } else {
       files.map((file) => allTodos.push({id: file.replace(/.txt/g, ''), text: file.replace(/.txt/g, '')}));
-      console.log(allTodos)
       callback(null, allTodos);
     }
   })
@@ -39,38 +38,37 @@ exports.readOne = (id, callback) => {
     if (err){
       callback(err);
     } else {
-      console.log({id, text: file})
       callback(null, {id, text: file})
     }
   })
-
-  // var text = items[id];
-  // if (!text) {
-  //   callback(new Error(`No item with id: ${id}`));
-  // } else {
-  //   callback(null, { id, text });
-  // }
 };
 
 exports.update = (id, text, callback) => {
-  var item = items[id];
-  if (!item) {
-    callback(new Error(`No item with id: ${id}`));
-  } else {
-    items[id] = text;
-    callback(null, { id, text });
-  }
+  var updateFile = path.join(exports.dataDir, `${id}.txt`);
+  fs.readFile(updateFile, (err, fileData) => {
+    if (err) {
+      callback(err, null)
+    } else {
+      fs.writeFile(updateFile, text, (err) => {
+        if (err) {
+          callback(err);
+        } else {
+          callback(null, {id, text});
+        }
+      })
+    }
+  })
 };
 
 exports.delete = (id, callback) => {
-  var item = items[id];
-  delete items[id];
-  if (!item) {
-    // report an error if item not found
-    callback(new Error(`No item with id: ${id}`));
-  } else {
-    callback();
-  }
+  var deleteFile = path.join(exports.dataDir, `${id}.txt`);
+    fs.unlink(deleteFile, (err) => {
+      if (err) {
+        callback(err, null)
+      } else {
+        callback(null, deleteFile)
+      }
+    })
 };
 
 // Config+Initialization code -- DO NOT MODIFY /////////////////////////////////
