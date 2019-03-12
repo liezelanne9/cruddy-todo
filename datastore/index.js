@@ -21,19 +21,35 @@ exports.create = (text, callback) => {
 };
 
 exports.readAll = (callback) => {
-  var data = _.map(items, (text, id) => {
-    return { id, text };
-  });
-  callback(null, data);
+  var allTodos = [];
+  fs.readdir(exports.dataDir, (err, files) => {
+    if (err) {
+      callback(err);
+    } else {
+      files.map((file) => allTodos.push({id: file.replace(/.txt/g, ''), text: file.replace(/.txt/g, '')}));
+      console.log(allTodos)
+      callback(null, allTodos);
+    }
+  })
 };
 
 exports.readOne = (id, callback) => {
-  var text = items[id];
-  if (!text) {
-    callback(new Error(`No item with id: ${id}`));
-  } else {
-    callback(null, { id, text });
-  }
+  var readFile = path.join(exports.dataDir, `${id}.txt`);
+  fs.readFile(readFile, 'utf8', (err, file) => {
+    if (err){
+      callback(err);
+    } else {
+      console.log({id, text: file})
+      callback(null, {id, text: file})
+    }
+  })
+
+  // var text = items[id];
+  // if (!text) {
+  //   callback(new Error(`No item with id: ${id}`));
+  // } else {
+  //   callback(null, { id, text });
+  // }
 };
 
 exports.update = (id, text, callback) => {
